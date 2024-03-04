@@ -47,7 +47,7 @@ participants = list(set(formdata[header_email]))
 def FindNewPairs(max_tries=10, group_size=2):
     attempt_number = 1
     new_pairs_found = False # Boolean flag to check if new pairing has been found
-    assert group_size < len(participants)
+    assert len(participants)/group_size > 2 #want at least 2 groups
     
     # init set of new pairs
     npairs = set()
