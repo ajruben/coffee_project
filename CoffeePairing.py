@@ -4,8 +4,10 @@ import random
 import copy
 import os
 
+
+
 # path to the CSV files with participant data
-participants_csv = "Coffee Partner Lottery participants.csv"
+participants_csv = "random_csv.csv"
 
 # header names in the CSV file (name and e-mail of participants)
 header_name = "Your name:"
@@ -41,64 +43,58 @@ formdata = pd.read_csv(participants_csv, sep=DELIMITER)
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
 
- # init set of new pairs
-npairs = set()
-
-# running set of participants
-nparticipants = copy.deepcopy(participants)
-
-# Boolean flag to check if new pairing has been found
-new_pairs_found = False
-
 # try creating new pairing until successful
-while not new_pairs_found:   # to do: add a maximum number of tries
-  
-    # if odd number of participants, create one triple, then pairs
-    if len(participants)%2 != 0:
-        
-        # take three random participants from list of participants
-        p1 = random.choice(nparticipants)
-        nparticipants.remove(p1)
+def FindNewPairs(max_tries=10, group_size=2):
+    attempt_number = 1
+    new_pairs_found = False # Boolean flag to check if new pairing has been found
+    assert group_size < len(participants)
     
-        p2 = random.choice(nparticipants)
-        nparticipants.remove(p2)
-        
-        p3 = random.choice(nparticipants)
-        nparticipants.remove(p3)
-        
-        # create alphabetically sorted list of participants
-        plist = [p1, p2, p3]
-        plist.sort()
-                        
-        # add alphabetically sorted list to set of pairs
-        npairs.add(tuple(plist))
-
-  
-    # while still participants left to pair...
-    while len(nparticipants) > 0:
-
-        # take two random participants from list of participants
-        p1 = random.choice(nparticipants)
-        nparticipants.remove(p1)
+    # init set of new pairs
+    npairs = set()
+    # running set of participants
+    nparticipants = copy.deepcopy(participants)
     
-        p2 = random.choice(nparticipants)
-        nparticipants.remove(p2)
+    while not new_pairs_found and attempt_number <= max_tries:   # to do: add a maximum number of tries
+        # if odd number of participants and even groupsize, create one group size + 1, then even group size
+        
+        while (len(nparticipants)%group_size != 0):
+            plist=[]
+            for i in range(group_size +1):
+                p = random.choice(nparticipants)
+                plist.append(p)
+                nparticipants.remove(p)    
+            plist.sort()
+            # add alphabetically sorted list to set of pairs
+            npairs.add(tuple(plist))
+
+    
+        # while still participants left to pair...
+        print(len(nparticipants))
+        while len(nparticipants) > 0:
+            plist=[]
+            
+            for i in range(group_size):
                 
-        # create alphabetically sorted list of participants
-        plist = [p1, p2]
-        plist.sort()
-                        
-        # add alphabetically sorted list to set of pairs
-        npairs.add(tuple(plist))
+                p = random.choice(nparticipants)
+                plist.append(p)
+                nparticipants.remove(p)
 
- 
-    # check if all new pairs are indeed new, else reset
-    if npairs.isdisjoint(opairs):
-        new_pairs_found = True
-    else:
-        npairs = set()
-        nparticipants = copy.deepcopy(participants)
+            plist.sort()    
+            # add alphabetically sorted list to set of pairs
+            npairs.add(tuple(plist))
 
+    
+        # check if all new pairs are indeed new, else reset
+        if npairs.isdisjoint(opairs):
+            new_pairs_found = True
+            
+        else:
+            npairs = set()
+            nparticipants = copy.deepcopy(participants)
+            attempt_number += 1
+    
+    return npairs, attempt_number
+npairs, attempt_number = FindNewPairs(group_size=7)
 
 # assemble output for printout
 output_string = ""
@@ -156,4 +152,4 @@ with open(all_pairs_csv, mode) as file:
              
 # print finishing message
 print()
-print("Job done.")
+print(f"Job done after {attempt_number} attempts.")
