@@ -12,6 +12,10 @@ participants_csv = "random_csv.csv"
 # header names in the CSV file (name and e-mail of participants)
 header_name = "Your name:"
 header_email = "Your e-mail:"
+header_conversation_startes = "Conversation Starters"
+
+# path to CSV file that stores conversation starters
+conversation_starters_csv = "conversation_starters.csv"
 
 # path to TXT file that stores the pairings of this round
 new_pairs_txt = "Coffee Partner Lottery new pairs.txt"
@@ -36,12 +40,28 @@ if os.path.exists(all_pairs_csv):
             for i in range(0,len(row)):
                 group.append(row[i])                        
             opairs.add(tuple(group))
+                
+# load conversation starters from CSV file
+def load_conversation_starters() : 
+        starters = []
+        if os.path.exists(conversation_starters_csv):
+                with open(conversation_starters_csv, "r") as file:
+                        csvreader = csv.reader(file, delimiter=DELIMITER)
+                        for row in csvreader:
+                                for i in range(0,)
+                                starters.append(row[i])
+        return starters
+        
+# select random conversation starter
+
 
 # load participant's data
 formdata = pd.read_csv(participants_csv, sep=DELIMITER)
 
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
+
+# load conversation starters
 
 # try creating new pairing until successful
 def FindNewPairs(max_tries=10, group_size=2):
