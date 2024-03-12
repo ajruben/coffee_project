@@ -145,7 +145,7 @@ for pair in npairs:
     pair = list(pair)
     output_string += "* "
     # Checking if all participants in the pair have the same favorite color
-    if all_same_property(formdata[formdata[header_email].isin(pair)]):
+    if all_same_property(formdata[formdata[header_email].isin(pair)], 'Your favorite color:'):
         color = formdata.loc[formdata[header_email] == pair[0], 'Your favorite color:'].iloc[0]
         color_conversation_starters = get_property_conversation_starter(conversation_starters, color)
         if color_conversation_starters:
