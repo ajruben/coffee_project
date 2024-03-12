@@ -71,9 +71,12 @@ formdata = pd.read_csv(participants_csv, sep=DELIMITER)
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
 
-# check if all participants in a group have the same favorite color
-def all_same_color(df):
-    return df['Your favorite color:'].nunique() == 1
+# check if all participants in a group have the same favorite color, season, or city/nature preference
+def all_same_property(df, property_column):
+    return df[property_column].nunique() == 1
+# get conversation starter based on a specific property
+def get_property_conversation_starter(conversation_starters, property_value):
+    return conversation_starters.get(property_value, [])
 
 # try creating new pairing until successful
 def FindNewPairs(max_tries=10, group_size=2):
@@ -141,17 +144,35 @@ conversation_starters = load_conversation_starters()
 for pair in npairs:
     pair = list(pair)
     output_string += "* "
-     # checking if all participants in the pair have the same favorite color
+    # Checking if all participants in the pair have the same favorite color
     if all_same_color(formdata[formdata[header_email].isin(pair)]):
-        # if all have the same favorite color, assign the corresponding conversation starter
         color = formdata.loc[formdata[header_email] == pair[0], 'Your favorite color:'].iloc[0]
-        color_conversation_starters = conversation_starters.get(color, conversation_starters["Random"])
+        color_conversation_starters = get_property_conversation_starter(conversation_starters, color)
         if color_conversation_starters:
             output_string += random.choice(color_conversation_starters) + "\n"
         else:
             output_string += "No conversation starter found for this color.\n"
+    
+    # Checking if all participants in the pair have the same favorite season
+    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'Your favorite season:'):
+        season = formdata.loc[formdata[header_email] == pair[0], 'Your favorite season:'].iloc[0]
+        season_conversation_starters = get_property_conversation_starter(conversation_starters, season)
+        if season_conversation_starters:
+            output_string += random.choice(season_conversation_starters) + "\n"
+        else:
+            output_string += "No conversation starter found for this season.\n"
+    
+    # Checking if all participants in the pair have the same preference for city/nature
+    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'City or Nature:'):
+        preference = formdata.loc[formdata[header_email] == pair[0], 'City or Nature:'].iloc[0]
+        preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
+        if preference_conversation_starters:
+            output_string += random.choice(preference_conversation_starters) + "\n"
+        else:
+            output_string += "No conversation starter found for this preference.\n"
+    
     else:
-        # if they have different favorite colors, assign a random conversation starter from the general pool
+        # If none of the specific properties match, assign a random conversation starter from the general pool
         output_string += random.choice(conversation_starters["Random"]) + "\n"
     
 # write output to console
