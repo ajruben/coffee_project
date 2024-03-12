@@ -50,8 +50,24 @@ def load_conversation_starters() :
                         for row in csvreader:
                                 starters.append(row[0])
         return starters
-        
+
+# pick random conversation starter
+def random_conversation_starter(conversation_starters_csv):
+        try:
+                with open(conversation_starters_csv, "r") as file:
+                        csvreader = csv.reader(file, delimiter=DELIMITER)
+                        next(reader, None) #skip header 
+                        
+                        #selection of random convesation starter from the first column (for pairs with no similar characteristic)
+                        no_sim_char = [row[0] for row in csvreader]
+                        #pick a random conversation starter for the pairs
+                        random_conversation_starter = random.choice(no_sim_char)
+                        return random_conversation_starter
+        except FileNotFoundError:
+                print("File not found")
+
 # check if all participants in a group have same answer
+
 
 
 # load participant's data
