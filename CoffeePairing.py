@@ -55,7 +55,7 @@ def random_conversation_starter(conversation_starters_csv):
         try:
                 with open(conversation_starters_csv, "r") as file:
                         csvreader = csv.reader(file, delimiter=DELIMITER)
-                        next(reader, None) #skip header 
+                        next(csvreader, None) #skip header 
                         
                         #selection of random convesation starter from the first column (for pairs with no similar characteristic)
                         no_sim_char = [row[0] for row in csvreader]
