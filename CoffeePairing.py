@@ -53,7 +53,19 @@ def load_conversation_starters() :
         return starters
         
 # select random conversation starter
-
+def random_conversation_starter(conversation_starters_csv):
+        try:
+                with open(conversation_starters_csv, "r") as file:
+                        csvreader = csv.reader(file, delimiter=DELIMITER)
+                        next(reader, None) #skip header 
+                        
+                        #selection of random convesation starter from the first column (for pairs with no similar characteristic)
+                        no_sim_char = [row[0] for row in csvreader]
+                        #pick a random conversation starter for the pairs
+                        random_conversation_starter = random.choice(no_sim_char)
+                        return random_conversation_starter
+        except FileNotFoundError:
+                print("File not found")
 
 # load participant's data
 formdata = pd.read_csv(participants_csv, sep=DELIMITER)
