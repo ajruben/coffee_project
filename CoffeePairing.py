@@ -76,7 +76,7 @@ def all_same_property(df, property_column):
     return df[property_column].nunique() == 1
 # get conversation starter based on a specific property
 def get_property_conversation_starter(conversation_starters, property_value):
-    return conversation_starters.get(property_value, [])
+    return conversation_starters.get(property_value, ["No conversation starter found for this property."])
 
 # try creating new pairing until successful
 def FindNewPairs(max_tries=10, group_size=2):
