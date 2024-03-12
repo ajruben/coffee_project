@@ -48,11 +48,10 @@ def load_conversation_starters() :
                 with open(conversation_starters_csv, "r") as file:
                         csvreader = csv.reader(file, delimiter=DELIMITER)
                         for row in csvreader:
-                                for i in range(0,)
-                                starters.append(row[i])
+                                starters.append(row[0])
         return starters
         
-# select random conversation starter
+# check if all participants in a group have same answer
 
 
 # load participant's data
