@@ -14,6 +14,8 @@ last_names = ["Jones", "Williams", "Jackson", "Johnson", "Rodriquez", "Smith",
               "Anderson", "Moore", "Lee", "Perez", "Harris", "Sanchez",
               "Clark", "Ramirez", "Lewis", "Green", "Nelson", "Campbell"]
 color_choice = ["Blue", "Red", "Purple"]
+season_choice = ["Summer", "Winter", "Autumn", "Spring"]
+city_or_nature = ["City", "Nature"]
 
 random_participants_names = [random.choice(first_names) + " " + random.choice(last_names) for i in range(50)]
 random_participants_emails = [] #init empty list
@@ -24,10 +26,10 @@ for name in random_participants_names:
     random_participants_emails.append(random_email)
 assert len(random_participants_emails) == len(random_participants_names)    
 
-create_csv_format = [["ID", "Your name:", "Your e-mail:", "Your favorite color:"]]
+create_csv_format = [["ID", "Your name:", "Your e-mail:", "Your favorite color:", "Your favourite season:", "prefer city or nature:"]]
 
 for row in range(len(random_participants_names)):
-    create_csv_format.append([row + 1, random_participants_names[row], random_participants_emails[row], random.choice(color_choice)])
+    create_csv_format.append([row + 1, random_participants_names[row], random_participants_emails[row], random.choice(color_choice), random.choice(season_choice), random.choice(city_or_nature)])
 
 with open("random_csv.csv", "w") as file:
     writer = csv.writer(file, lineterminator="\n")
