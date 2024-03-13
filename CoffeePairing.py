@@ -114,7 +114,7 @@ def FindNewPairs(max_tries=10, group_size=2):
 
     
         # while still participants left to pair...
-        print(len(nparticipants))
+  
         while len(nparticipants) > 0:
             plist=[]
             
@@ -150,9 +150,21 @@ output_string += "------------------------\n"
 
 # load conversation starters
 conversation_starters = pd.read_csv('conversation_starters.csv')
-for pair in npairs:
+for i, pair in enumerate(npairs):
     pair = list(pair)
-    output_string += "* "
+    gen_pair_string = f"\n* Members of pair number {i +1}: "
+    for member in range(len(pair)):
+        gen_pair_string += pair[member]
+        if member < len(pair) - 2:
+            gen_pair_string+= ', '
+        elif member == len(pair) -2:
+            gen_pair_string+= ', and '
+        else:
+             gen_pair_string += '.\n'
+         
+    
+    output_string +=  gen_pair_string
+    output_string += "Conversation starter: "
     # Checking if all participants in the pair have the same favorite color
     if all_same_property(formdata, 'Your favorite color:', pair):
         color = formdata.loc[formdata[header_email] == pair[0], 'Your favorite color:'].iloc[0]
@@ -177,7 +189,6 @@ for pair in npairs:
     elif all_same_property(formdata, 'prefer city or nature:', pair):
         preference = formdata.loc[formdata[header_email] == pair[0], 'prefer city or nature:'].iloc[0]
         preference_conversation_starters = conversation_starters[preference][0]
-        print(preference, preference)
         #preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
         if preference_conversation_starters:
             output_string += preference_conversation_starters + "\n"
