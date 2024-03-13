@@ -4,8 +4,6 @@ import random
 import copy
 import os
 
-
-
 # path to the CSV files with participant data
 participants_csv = "random_csv.csv"
 
@@ -40,15 +38,6 @@ if os.path.exists(all_pairs_csv):
                 group.append(row[i])                        
             opairs.add(tuple(group))
                 
-# load conversation starters from CSV file
-def load_conversation_starters() : 
-        starters = {"Random": []}
-        if os.path.exists(conversation_starters_csv):
-                with open(conversation_starters_csv, "r") as file:
-                        csvreader = csv.reader(file, delimiter=DELIMITER)
-                        for row in csvreader:
-                                starters[row[0]] = row[1:]
-        return starters
 
 # pick random conversation starter
 def random_conversation_starter(conversation_starters_csv):
@@ -72,12 +61,18 @@ formdata = pd.read_csv('random_csv.csv')
 participants = list(set(formdata[header_email]))
 
 # check if all participants in a group have the same favorite color, season, or city/nature preference
-def all_same_property(df, property_column):
-    if df[property_column].nunique() == 1:
-         return 1
+def all_same_property(df, property_column, pair):
+    #retrieve the indices of the persons in the paired group
+    indices = df[df['Your e-mail:'].isin(pair)].index
+    #check their answers for the respective question
+    answers = (df[property_column][indices]).tolist()
+    #check if their answers are the same
+    unique_answers = set(answers)
+    #depending if the answer the same for everyone, return True, else return False
+    if len(unique_answers) == 1:
+        return True
     else:
-         return 0
-    
+        return False
 # get conversation starter based on a specific property
 def get_property_conversation_starter(conversation_starters, property_value):
     return conversation_starters.get(property_value, ["No conversation starter found for this property."])
@@ -108,7 +103,7 @@ def FindNewPairs(max_tries=10, group_size=2):
 
     
         # while still participants left to pair...
-        print(len(nparticipants))
+  
         while len(nparticipants) > 0:
             plist=[]
             
@@ -133,7 +128,7 @@ def FindNewPairs(max_tries=10, group_size=2):
             attempt_number += 1
     
     return npairs, attempt_number
-npairs, attempt_number = FindNewPairs(group_size=7)
+npairs, attempt_number = FindNewPairs(group_size=4)
 
 # assemble output for printout
 output_string = ""
@@ -143,38 +138,51 @@ output_string += "Today's coffee partners:\n"
 output_string += "------------------------\n"
 
 # load conversation starters
-conversation_starters = load_conversation_starters()
-
-for pair in npairs:
+conversation_starters = pd.read_csv('conversation_starters.csv')
+for i, pair in enumerate(npairs):
     pair = list(pair)
-    output_string += "* "
+    gen_pair_string = f"\n* Members of pair number {i +1}: "
+    for member in range(len(pair)):
+        gen_pair_string += pair[member]
+        if member < len(pair) - 2:
+            gen_pair_string+= ', '
+        elif member == len(pair) -2:
+            gen_pair_string+= ' and '
+        else:
+             gen_pair_string += '.\n'
+         
+    
+    output_string +=  gen_pair_string
+    output_string += "Conversation starter: "
     # Checking if all participants in the pair have the same favorite color
-    if all_same_property(formdata[formdata[header_email].isin(pair)], 'Your favorite color:'):
+    if all_same_property(formdata, 'Your favorite color:', pair):
         color = formdata.loc[formdata[header_email] == pair[0], 'Your favorite color:'].iloc[0]
-        color_conversation_starters = get_property_conversation_starter(conversation_starters, color)
+        color_conversation_starters = conversation_starters[color][0]
+
         if color_conversation_starters:
-            output_string += random.choice(color_conversation_starters) + "\n"
+            output_string += color_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this color.\n"
     
     # Checking if all participants in the pair have the same favorite season
-    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'Your favorite season:'):
+    elif all_same_property(formdata, 'Your favorite season:', pair):
         season = formdata.loc[formdata[header_email] == pair[0], 'Your favorite season:'].iloc[0]
-        season_conversation_starters = get_property_conversation_starter(conversation_starters, season)
+        season_conversation_starters = conversation_starters[season][0]
+        #season_conversation_starters = get_property_conversation_starter(conversation_starters, season)
         if season_conversation_starters:
-            output_string += random.choice(season_conversation_starters) + "\n"
+            output_string += season_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this season.\n"
     
     # Checking if all participants in the pair have the same preference for city/nature
-    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'prefer city or nature:'):
+    elif all_same_property(formdata, 'prefer city or nature:', pair):
         preference = formdata.loc[formdata[header_email] == pair[0], 'prefer city or nature:'].iloc[0]
-        preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
+        preference_conversation_starters = conversation_starters[preference][0]
+        #preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
         if preference_conversation_starters:
-            output_string += random.choice(preference_conversation_starters) + "\n"
+            output_string += preference_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this preference.\n"
-    
     else:
         # If none of the specific properties match, assign a random conversation starter from the general pool
         output_string += random.choice(conversation_starters["Random"]) + "\n"
@@ -214,8 +222,4 @@ with open(all_pairs_csv, mode) as file:
             else:
                 file.write(pair[i] + "\n")
 
-
-             
-# print finishing message
-print()
 print(f"Job done after {attempt_number} attempts.")
