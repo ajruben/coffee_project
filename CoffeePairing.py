@@ -225,8 +225,4 @@ with open(all_pairs_csv, mode) as file:
             else:
                 file.write(pair[i] + "\n")
 
-
-             
-# print finishing message
-print()
 print(f"Job done after {attempt_number} attempts.")
