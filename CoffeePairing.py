@@ -156,38 +156,36 @@ for pair in npairs:
     # Checking if all participants in the pair have the same favorite color
     if all_same_property(formdata, 'Your favorite color:', pair):
         color = formdata.loc[formdata[header_email] == pair[0], 'Your favorite color:'].iloc[0]
-        print(color)
         color_conversation_starters = conversation_starters[color][0]
+
         if color_conversation_starters:
-            output_string += random.choice(color_conversation_starters) + "\n"
+            output_string += color_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this color.\n"
     
     # Checking if all participants in the pair have the same favorite season
     elif all_same_property(formdata, 'Your favorite season:', pair):
         season = formdata.loc[formdata[header_email] == pair[0], 'Your favorite season:'].iloc[0]
-        print(season)
         season_conversation_starters = conversation_starters[season][0]
         #season_conversation_starters = get_property_conversation_starter(conversation_starters, season)
         if season_conversation_starters:
-            output_string += random.choice(season_conversation_starters) + "\n"
+            output_string += season_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this season.\n"
     
     # Checking if all participants in the pair have the same preference for city/nature
     elif all_same_property(formdata, 'prefer city or nature:', pair):
         preference = formdata.loc[formdata[header_email] == pair[0], 'prefer city or nature:'].iloc[0]
-        season_conversation_starters = conversation_starters[season][0]
-        print(season, season_conversation_starters)
+        preference_conversation_starters = conversation_starters[preference][0]
+        print(preference, preference)
         #preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
-        if season_conversation_starters:
-            output_string += random.choice(season_conversation_starters) + "\n"
+        if preference_conversation_starters:
+            output_string += preference_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this preference.\n"
     
     else:
         # If none of the specific properties match, assign a random conversation starter from the general pool
-        print('hoi')
         output_string += random.choice(conversation_starters["Random"]) + "\n"
     
 # write output to console
