@@ -40,15 +40,6 @@ if os.path.exists(all_pairs_csv):
                 group.append(row[i])                        
             opairs.add(tuple(group))
                 
-# load conversation starters from CSV file
-def load_conversation_starters() : 
-        starters = {"Random": []}
-        if os.path.exists(conversation_starters_csv):
-                with open(conversation_starters_csv, "r") as file:
-                        csvreader = csv.reader(file, delimiter=DELIMITER)
-                        for row in csvreader:
-                                starters[row[0]] = row[1:]
-        return starters
 
 # pick random conversation starter
 def random_conversation_starter(conversation_starters_csv):
@@ -139,7 +130,7 @@ def FindNewPairs(max_tries=10, group_size=2):
             attempt_number += 1
     
     return npairs, attempt_number
-npairs, attempt_number = FindNewPairs(group_size=3)
+npairs, attempt_number = FindNewPairs(group_size=4)
 
 # assemble output for printout
 output_string = ""
