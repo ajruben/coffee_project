@@ -66,14 +66,18 @@ def random_conversation_starter(conversation_starters_csv):
                 print("File not found")
 
 # load participant's data
-formdata = pd.read_csv(participants_csv, sep=DELIMITER)
+formdata = pd.read_csv('random_csv.csv')
 
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
 
 # check if all participants in a group have the same favorite color, season, or city/nature preference
 def all_same_property(df, property_column):
-    return df[property_column].nunique() == 1
+    if df[property_column].nunique() == 1:
+         return 1
+    else:
+         return 0
+    
 # get conversation starter based on a specific property
 def get_property_conversation_starter(conversation_starters, property_value):
     return conversation_starters.get(property_value, ["No conversation starter found for this property."])
@@ -163,8 +167,8 @@ for pair in npairs:
             output_string += "No conversation starter found for this season.\n"
     
     # Checking if all participants in the pair have the same preference for city/nature
-    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'City or Nature:'):
-        preference = formdata.loc[formdata[header_email] == pair[0], 'City or Nature:'].iloc[0]
+    elif all_same_property(formdata[formdata[header_email].isin(pair)], 'prefer city or nature:'):
+        preference = formdata.loc[formdata[header_email] == pair[0], 'prefer city or nature:'].iloc[0]
         preference_conversation_starters = get_property_conversation_starter(conversation_starters, preference)
         if preference_conversation_starters:
             output_string += random.choice(preference_conversation_starters) + "\n"
