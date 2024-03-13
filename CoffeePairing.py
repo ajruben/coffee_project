@@ -185,7 +185,6 @@ for i, pair in enumerate(npairs):
             output_string += preference_conversation_starters + "\n"
         else:
             output_string += "No conversation starter found for this preference.\n"
-    
     else:
         # If none of the specific properties match, assign a random conversation starter from the general pool
         output_string += random.choice(conversation_starters["Random"]) + "\n"
