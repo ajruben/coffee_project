@@ -158,7 +158,7 @@ for i, pair in enumerate(npairs):
         if member < len(pair) - 2:
             gen_pair_string+= ', '
         elif member == len(pair) -2:
-            gen_pair_string+= ', and '
+            gen_pair_string+= ' and '
         else:
              gen_pair_string += '.\n'
          
