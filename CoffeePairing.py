@@ -4,8 +4,6 @@ import random
 import copy
 import os
 
-
-
 # path to the CSV files with participant data
 participants_csv = "random_csv.csv"
 
